@@ -206,7 +206,7 @@
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-              <stringProp name="HTTPSampler.path">${application.postfix}/crowd/plugins/servlet/secsignid</stringProp>
+              <stringProp name="HTTPSampler.path">${application.postfix}plugins/servlet/secsignid</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -226,6 +226,7 @@
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="1446909292">&lt;username&gt;</stringProp>
                   <stringProp name="-2061027074">Welcome to the Crowd administration console</stringProp>
+                  <stringProp name="2015601493">My profile</stringProp>
                 </collectionProp>
                 <stringProp name="Assertion.custom_message">ERROR!!!</stringProp>
                 <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
