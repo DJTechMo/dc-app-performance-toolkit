@@ -9,6 +9,7 @@ class Login(BasePage):
     page_loaded_selector = LoginPageLocators.login_button
 
     def set_credentials(self, username, password):
+        self.get_element(LoginPageLocators.login_username_field).clear();
         self.get_element(LoginPageLocators.login_username_field).send_keys(username)
         self.get_element(LoginPageLocators.login_password_field).send_keys(password)
 
