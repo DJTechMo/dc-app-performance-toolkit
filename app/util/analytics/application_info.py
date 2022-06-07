@@ -1,8 +1,10 @@
-from util.conf import JIRA_SETTINGS, CONFLUENCE_SETTINGS, BITBUCKET_SETTINGS, JSM_SETTINGS, CROWD_SETTINGS
+from util.conf import JIRA_SETTINGS, CONFLUENCE_SETTINGS, BITBUCKET_SETTINGS, JSM_SETTINGS, CROWD_SETTINGS, \
+    BAMBOO_SETTINGS
 from util.api.jira_clients import JiraRestClient
 from util.api.confluence_clients import ConfluenceRestClient
 from util.api.bitbucket_clients import BitbucketRestClient
 from util.api.crowd_clients import CrowdRestClient
+from util.api.bamboo_clients import BambooClient
 from lxml import etree
 import json
 
@@ -11,6 +13,9 @@ CONFLUENCE = 'confluence'
 BITBUCKET = 'bitbucket'
 JSM = 'jsm'
 CROWD = 'crowd'
+BAMBOO = 'bamboo'
+INSIGHT = 'insight'
+
 DEFAULT_ACTIONS = 'util/default_test_actions.json'
 
 
@@ -155,15 +160,40 @@ class Crowd(BaseApplication):
         return f"{self.__users_count()} users"
 
 
+class Bamboo(BaseApplication):
+    type = BAMBOO
+    pass
+
+    @property
+    def version(self):
+        server_info = self.client.get_server_info()
+        return server_info['version']
+
+    @property
+    def nodes_count(self):
+        return self.client.get_nodes_count()
+
+    def __build_plans_count(self):
+        return len(self.client.get_build_plans(max_result=2000))
+
+    @property
+    def dataset_information(self):
+        return f"{self.__build_plans_count()} build plans"
+
+
+class Insight(Jsm):
+    type = INSIGHT
+
+
 class ApplicationSelector:
     APP_TYPE_MSG = ('ERROR: Please run util/analytics.py with application type as argument. '
-                    'E.g. python util/analytics.py jira/confluence/bitbucket/jsm')
+                    f'E.g. python util/analytics.py {JIRA}/{CONFLUENCE}/{BITBUCKET}/{JSM}/{BAMBOO}/{INSIGHT}')
 
     def __init__(self, app_name):
         self.application_type = self.__get_application_type(app_name)
 
     def __get_application_type(self, app_name):
-        if app_name.lower() not in [JIRA, CONFLUENCE, BITBUCKET, JSM, CROWD]:
+        if app_name.lower() not in [JIRA, CONFLUENCE, BITBUCKET, JSM, CROWD, BAMBOO, INSIGHT]:
             raise SystemExit(self.APP_TYPE_MSG)
         return app_name.lower()
 
@@ -176,6 +206,11 @@ class ApplicationSelector:
         if self.application_type == BITBUCKET:
             return Bitbucket(api_client=BitbucketRestClient, config_yml=BITBUCKET_SETTINGS)
         if self.application_type == JSM:
-            return Jsm(api_client=JiraRestClient, config_yml=JSM_SETTINGS)
+            if JSM_SETTINGS.insight:
+                return Insight(api_client=JiraRestClient, config_yml=JSM_SETTINGS)
+            else:
+                return Jsm(api_client=JiraRestClient, config_yml=JSM_SETTINGS)
         if self.application_type == CROWD:
             return Crowd(api_client=CrowdRestClient, config_yml=CROWD_SETTINGS)
+        if self.application_type == BAMBOO:
+            return Bamboo(api_client=BambooClient, config_yml=BAMBOO_SETTINGS)
