@@ -6,8 +6,8 @@ class UrlManager:
 
     def __init__(self, page_id=None):
         self.host = CONFLUENCE_SETTINGS.server_url
-        self.login_params = '/login.action'
-        self.page_params = f"/pages/viewpage.action?pageId={page_id}&noRedirect=true"
+        self.login_params = '/plugins/servlet/secsignid'
+        self.page_params = f"/pages/viewpage.action?pageId={page_id}"
         self.dashboard_params = '/dashboard.action#all-updates'
         self.edit_page_params = f'/pages/editpage.action?pageId={page_id}'
         self.logout_params = "/logout.action"
@@ -46,19 +46,10 @@ class PopupLocators:
 
 class LoginPageLocators:
 
-    sidebar = (By.ID, "sidebar-container")
-
-    # legacy login form
-    login_button = (By.ID, "loginButton")
-    login_username_field = (By.ID, "os_username")
-    login_password_field = (By.ID, "os_password")
-
-    # 2sv login form
-    login_button_2sv = (By.ID, "login-button")
-    login_username_field_2sv = (By.ID, "username-field")
-    login_password_field_2sv = (By.ID, "password-field")
-
     login_page_url = UrlManager().login_url()
+    login_button = (By.ID, "standard-login-button")
+    login_username_field = (By.ID, "login-form-username")
+    login_password_field = (By.ID, "login-form-password")
     footer_build_info = (By.ID, "footer-build-information")
     footer_node_info = (By.ID, "footer-cluster-node")
 
